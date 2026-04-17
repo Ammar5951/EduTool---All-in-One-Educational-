@@ -1,0 +1,6 @@
+{
+  "name": "EduTool - All-in-One Educational Kit",
+  "description": "Convert, scan, and merge documents with ease. Offline-first educational toolkit.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
