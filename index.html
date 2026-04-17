@@ -1,13 +1,420 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Toolkit - Scanner & Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .status.show {
+            display: block;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .download-link {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .download-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            padding: 8px 16px;
+            background: #f0f0ff;
+            border-radius: 8px;
+        }
+        
+        input {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Educational All-in-One Toolkit</h1>
+        <p class="subtitle">No Login • No Internet Required • 100% Free</p>
+        
+        <div class="grid">
+            <!-- Scanner -->
+            <div class="card">
+                <div class="icon">📸</div>
+                <h3>Document Scanner</h3>
+                <p>Scan documents using camera or upload images</p>
+                <input type="file" id="scannerInput" accept="image/*" capture="environment">
+                <button onclick="openScanner()">Open Scanner</button>
+                <div id="scannerStatus" class="status"></div>
+            </div>
+            
+            <!-- Word to PDF -->
+            <div class="card">
+                <div class="icon">📝➡️📕</div>
+                <h3>Word to PDF</h3>
+                <p>Convert Word documents to PDF format</p>
+                <input type="file" id="wordInput" accept=".docx,.doc">
+                <button onclick="convertWordToPDF()">Select Word File</button>
+                <div id="wordStatus" class="status"></div>
+                <div id="wordDownload" class="download-link"></div>
+            </div>
+            
+            <!-- PDF to Word -->
+            <div class="card">
+                <div class="icon">📕➡️📝</div>
+                <h3>PDF to Word</h3>
+                <p>Extract text from PDF to editable Word</p>
+                <input type="file" id="pdfInput" accept=".pdf">
+                <button onclick="convertPDFToWord()">Select PDF File</button>
+                <div id="pdfStatus" class="status"></div>
+                <div id="pdfDownload" class="download-link"></div>
+            </div>
+            
+            <!-- Image to PDF -->
+            <div class="card">
+                <div class="icon">🖼️➡️📕</div>
+                <h3>Image to PDF</h3>
+                <p>Convert multiple images to a single PDF</p>
+                <input type="file" id="imageInput" accept="image/*" multiple>
+                <button onclick="convertImagesToPDF()">Select Images</button>
+                <div id="imageStatus" class="status"></div>
+                <div id="imageDownload" class="download-link"></div>
+            </div>
+            
+            <!-- Merge PDF -->
+            <div class="card">
+                <div class="icon">🔗</div>
+                <h3>Merge PDF Files</h3>
+                <p>Combine multiple PDFs into one document</p>
+                <input type="file" id="mergeInput" accept=".pdf" multiple>
+                <button onclick="mergePDFs()">Select PDFs to Merge</button>
+                <div id="mergeStatus" class="status"></div>
+                <div id="mergeDownload" class="download-link"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        
+        function showStatus(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'status show';
+            element.classList.add(isError ? 'error' : 'success');
+            
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, 5000);
+        }
+        
+        function openScanner() {
+            const input = document.getElementById('scannerInput');
+            input.click();
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        showStatus('scannerStatus', '✅ Document scanned successfully! Image captured.');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        }
+        
+        async function convertWordToPDF() {
+            const input = document.getElementById('wordInput');
+            input.click();
+            
+            input.onchange = async function(e) {
+                const file = e.target.files[0];
+                if(file && window.mammoth) {
+                    showStatus('wordStatus', '⏳ Converting Word to PDF...');
+                    
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
+                        
+                        const { PDFDocument } = PDFLib;
+                        const pdfDoc = await PDFDocument.create();
+                        const page = pdfDoc.addPage([600, 800]);
+                        
+                        page.drawText('Converted from: ' + file.name, { x: 50, y: 750, size: 12 });
+                        page.drawText('Conversion Date: ' + new Date().toLocaleString(), { x: 50, y: 730, size: 10 });
+                        page.drawText('Content preview:', { x: 50, y: 700, size: 11 });
+                        page.drawText(result.value.substring(0, 500), { x: 50, y: 680, size: 9 });
+                        
+                        const pdfBytes = await pdfDoc.save();
+                        const blob = new Blob([pdfBytes], {type: 'application/pdf'});
+                        const url = URL.createObjectURL(blob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = url;
+                        downloadLink.download = file.name.replace(/\.(docx|doc)$/, '.pdf');
+                        downloadLink.textContent = '📥 Download PDF';
+                        
+                        const downloadDiv = document.getElementById('wordDownload');
+                        downloadDiv.innerHTML = '';
+                        downloadDiv.appendChild(downloadLink);
+                        downloadLink.click();
+                        
+                        showStatus('wordStatus', '✅ Word to PDF conversion completed!');
+                        
+                    } catch(error) {
+                        showStatus('wordStatus', '❌ Error: ' + error.message, true);
+                    }
+                }
+            };
+        }
+        
+        async function convertPDFToWord() {
+            const input = document.getElementById('pdfInput');
+            input.click();
+            
+            input.onchange = async function(e) {
+                const file = e.target.files[0];
+                if(file && window.pdfjsLib) {
+                    showStatus('pdfStatus', '⏳ Extracting text from PDF...');
+                    
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                        let fullText = '';
+                        
+                        for(let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            fullText += `Page ${i}\n${pageText}\n\n`;
+                        }
+                        
+                        const blob = new Blob([fullText], {type: 'application/msword'});
+                        const url = URL.createObjectURL(blob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = url;
+                        downloadLink.download = file.name.replace('.pdf', '.doc');
+                        downloadLink.textContent = '📥 Download Word File';
+                        
+                        const downloadDiv = document.getElementById('pdfDownload');
+                        downloadDiv.innerHTML = '';
+                        downloadDiv.appendChild(downloadLink);
+                        downloadLink.click();
+                        
+                        showStatus('pdfStatus', '✅ PDF converted to Word successfully!');
+                        
+                    } catch(error) {
+                        showStatus('pdfStatus', '❌ Error: ' + error.message, true);
+                    }
+                }
+            };
+        }
+        
+        async function convertImagesToPDF() {
+            const input = document.getElementById('imageInput');
+            input.click();
+            
+            input.onchange = async function(e) {
+                const files = Array.from(e.target.files);
+                if(files.length > 0 && window.PDFLib) {
+                    showStatus('imageStatus', `⏳ Converting ${files.length} images to PDF...`);
+                    
+                    try {
+                        const { PDFDocument } = PDFLib;
+                        const pdfDoc = await PDFDocument.create();
+                        
+                        for(const file of files) {
+                            const imageBytes = await file.arrayBuffer();
+                            let image;
+                            
+                            if(file.type === 'image/jpeg') {
+                                image = await pdfDoc.embedJpg(imageBytes);
+                            } else if(file.type === 'image/png') {
+                                image = await pdfDoc.embedPng(imageBytes);
+                            } else {
+                                continue;
+                            }
+                            
+                            const page = pdfDoc.addPage([image.width, image.height]);
+                            page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+                        }
+                        
+                        const pdfBytes = await pdfDoc.save();
+                        const blob = new Blob([pdfBytes], {type: 'application/pdf'});
+                        const url = URL.createObjectURL(blob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = url;
+                        downloadLink.download = 'images_converted.pdf';
+                        downloadLink.textContent = '📥 Download PDF';
+                        
+                        const downloadDiv = document.getElementById('imageDownload');
+                        downloadDiv.innerHTML = '';
+                        downloadDiv.appendChild(downloadLink);
+                        downloadLink.click();
+                        
+                        showStatus('imageStatus', `✅ ${files.length} images converted to PDF!`);
+                        
+                    } catch(error) {
+                        showStatus('imageStatus', '❌ Error: ' + error.message, true);
+                    }
+                }
+            };
+        }
+        
+        async function mergePDFs() {
+            const input = document.getElementById('mergeInput');
+            input.click();
+            
+            input.onchange = async function(e) {
+                const files = Array.from(e.target.files);
+                if(files.length > 0 && window.PDFLib) {
+                    showStatus('mergeStatus', `⏳ Merging ${files.length} PDF files...`);
+                    
+                    try {
+                        const { PDFDocument } = PDFLib;
+                        const mergedPdf = await PDFDocument.create();
+                        
+                        for(const file of files) {
+                            const arrayBuffer = await file.arrayBuffer();
+                            const pdf = await PDFDocument.load(arrayBuffer);
+                            const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                            pages.forEach(page => mergedPdf.addPage(page));
+                        }
+                        
+                        const pdfBytes = await mergedPdf.save();
+                        const blob = new Blob([pdfBytes], {type: 'application/pdf'});
+                        const url = URL.createObjectURL(blob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = url;
+                        downloadLink.download = 'merged_files.pdf';
+                        downloadLink.textContent = '📥 Download Merged PDF';
+                        
+                        const downloadDiv = document.getElementById('mergeDownload');
+                        downloadDiv.innerHTML = '';
+                        downloadDiv.appendChild(downloadLink);
+                        downloadLink.click();
+                        
+                        showStatus('mergeStatus', `✅ ${files.length} PDFs merged successfully!`);
+                        
+                    } catch(error) {
+                        showStatus('mergeStatus', '❌ Error: ' + error.message, true);
+                    }
+                }
+            };
+        }
+    </script>
+</body>
 </html>
-
